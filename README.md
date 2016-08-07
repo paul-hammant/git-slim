@@ -30,6 +30,8 @@ $ git slim --depth 100
 
 Running `git slim` prints a before and after of the size of the .git folder.
 
+It also refuses to work if there's untracked or unpushed changes.
+
 ## Dry run mode
 
 ```
@@ -40,8 +42,6 @@ $ git slim --dry-run
 Dry run mode
 Size of .git folder before: 103M, best case size after: 6.4M (approx).
 ```
-
-It refuses to work if there's untracked or unpushed changes.
 
 # LICENSE
 
