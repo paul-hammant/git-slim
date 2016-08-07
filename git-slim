@@ -1,0 +1,86 @@
+#!/bin/sh
+
+set -e
+
+usage(){
+  echo "Usage:"
+  echo "  git slim --depth N --dry-run"
+  echo "  Note: Both arguments are optional, and N is a number 1 (default) and upwards"
+  exit 1
+}
+
+# Default depth is 1
+depth=1
+
+# Default is not to dry-run
+dry_run="0"
+
+# Depth can be orderidden as an option
+leftOver=""
+until [ -z $1 ]
+    do
+    if [ "$1" == "--depth" ]; then
+        shift
+        if [ "$1" -eq "$1" ] 2>/dev/null; then
+            depth="$1"
+            shift
+        else
+            echo "--depth option needs a following number"
+            exit 1
+        fi
+    elif [ "$1" == "--dry-run" ]; then
+        dry_run="1"
+        shift
+    elif [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+        usage
+    else
+        leftOver="${leftOver} $1"
+        shift
+    fi
+done
+if [ ! -z "${leftOver// }" ]; then
+    echo "Unrecognized params/options: $leftOver"
+    usage
+fi
+
+# Can only go ahead if a git repo
+not_a_git_repo=$(git status | grep "Not a git repository" | wc -l)
+if [ "$not_a_git_repo" -gt "0" ]
+then
+  echo "This isn't a Git repository, can't run 'git slim' here"
+  exit 1
+fi
+
+# Can only go ahead if there is nothing pending
+changed_lines=$(git status --porcelain | wc -l)
+if [ "$changed_lines" -gt "0" ]
+then
+  echo "There are untracked changes - meaning it is inappropriate to slim this repository"
+  exit 1
+fi
+
+# Can only go ahead if there is nothing taht should be pushed
+ahead_of_remote=$(git status | grep "Your branch is ahead" | wc -l)
+if [ "$ahead_of_remote" -gt "0" ]
+then
+  echo "There are local commits not pushed the default remote - meaning it is inappropriate to slim this repository"
+  exit 1
+fi
+
+size_before=$(du -h -d0 .git | cut -d$'\t' -f1)
+
+# Do it, using temp directory
+mkdir .git_slimmer
+git clone --no-checkout --depth=$depth  file://"$PWD" .git_slimmer > /dev/null 2> /dev/null
+size_after=$(du -h -d0 .git_slimmer/.git | cut -d$'\t' -f1)
+if [ "$dry_run" -lt "1" ]; then
+    rm -rf .git
+    mv .git_slimmer/.git .
+    git stash > /dev/null 2> /dev/null
+    git stash clear > /dev/null 2> /dev/null
+    git gc > /dev/null 2> /dev/null
+else
+    echo "Dry run mode"
+fi
+rm -rf .git_slimmer
+echo "Size of .git folder before: $size_before, best case size after: $size_after (approx)."
