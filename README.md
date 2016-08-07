@@ -12,6 +12,8 @@ I made this from [two answers to a StackOverflow question](http://stackoverflow.
 1. Copy `git-slim` to `/usr/local/bin/`
 2. make it executable 'chmod +x /usr/local/bin/git-slim', if it wasn't already.
 
+OR [via the Mac's homebrew](https://github.com/paul-hammant/homebrew-tap#git-slim---slims-down-a-local-git-clonerepo)
+
 # Using switchjdk
 
 ```
