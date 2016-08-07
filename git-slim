@@ -2,7 +2,6 @@
 
 set -e
 
-<<<<<<< HEAD
 usage(){
   echo "Usage:"
   echo "  git slim --depth N --dry-run"
@@ -16,11 +15,6 @@ depth=1
 # Default is not to dry-run
 dry_run="0"
 
-=======
-# Default depth is 1
-depth=1
-
->>>>>>> 168a0947e9d1414b70819cfeaa7c7c92bb2f6609
 # Depth can be orderidden as an option
 leftOver=""
 until [ -z $1 ]
@@ -34,14 +28,11 @@ until [ -z $1 ]
             echo "--depth option needs a following number"
             exit 1
         fi
-<<<<<<< HEAD
     elif [ "$1" == "--dry-run" ]; then
         dry_run="1"
         shift
     elif [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
         usage
-=======
->>>>>>> 168a0947e9d1414b70819cfeaa7c7c92bb2f6609
     else
         leftOver="${leftOver} $1"
         shift
@@ -49,11 +40,7 @@ until [ -z $1 ]
 done
 if [ ! -z "${leftOver// }" ]; then
     echo "Unrecognized params/options: $leftOver"
-<<<<<<< HEAD
     usage
-=======
-    exit 1
->>>>>>> 168a0947e9d1414b70819cfeaa7c7c92bb2f6609
 fi
 
 # Can only go ahead if a git repo
@@ -80,7 +67,6 @@ then
   exit 1
 fi
 
-<<<<<<< HEAD
 size_before=$(du -h -d0 .git | cut -d$'\t' -f1)
 
 # Do it, using temp directory
@@ -98,11 +84,3 @@ else
 fi
 rm -rf .git_slimmer
 echo "Size of .git folder before: $size_before, best case size after: $size_after (approx)."
-=======
-# Do it, using temp directory
-mkdir .git_slimmer
-git clone --bare --depth=$depth  file://"$PWD" .git_slimmer
-rm -rf .git/objects
-mv .git_slimmer/{shallow,objects} .git
-rm -rf .git_slimmer
->>>>>>> 168a0947e9d1414b70819cfeaa7c7c92bb2f6609
