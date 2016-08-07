@@ -14,7 +14,7 @@ I made this from [two answers to a StackOverflow question](http://stackoverflow.
 
 OR [via the Mac's homebrew](https://github.com/paul-hammant/homebrew-tap#git-slim---slims-down-a-local-git-clonerepo)
 
-# Using switchjdk
+# Using git slim
 
 ```
 $ cd your-repo-or-clone
