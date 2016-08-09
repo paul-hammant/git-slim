@@ -15,7 +15,6 @@ depth=1
 # Default is not to dry-run
 dry_run="0"
 
-# Depth can be orderidden as an option
 leftOver=""
 until [ -z $1 ]
     do
